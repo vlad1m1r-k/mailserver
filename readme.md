@@ -2,7 +2,7 @@ Simple mail server emulator.
 
 How to run:
 
-#####With Docker Mysql:
+##### With Docker Mysql:
 
     1. cd ~/IdeaProjects/mailserver
     2. sudo docker-compose up -d
