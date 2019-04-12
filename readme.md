@@ -14,3 +14,7 @@ Or prepare own MySql server and edit application.properties file.
 core/src/main/java/com/vladimir/mailserver/Main class
 
 Go To http://localhost:8080
+
+Admin account:
+Login: admin
+Pass: admin
