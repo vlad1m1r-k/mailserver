@@ -112,8 +112,8 @@
             return '?size=' + this.size + '&page=' + this.page + '&sort=' + this.sortField + ',' + this.direction
         },
         setSort: function (name) {
-            if (this.sortField === name) {
-                this.direction = this.direction === 'desc' ? 'asc' : 'desc';
+            if (this.sortField == name) {
+                this.direction = this.direction == 'desc' ? 'asc' : 'desc';
             } else {
                 this.sortField = name;
                 this.direction = 'asc';
@@ -126,7 +126,7 @@
     fillUserSelect();
     function updateOrg() {
         $.ajax({
-            url: '/rest/admin/settings',
+            url: '/admin/settings',
             success: function (data) {
                 $('#adminOrgName').val(data.name);
                 let table = $('#adminDomains');
@@ -154,7 +154,7 @@
                         const btnDel = $('<button class="btn btn-sm btn-danger">&times;</button>').attr('name', data.domains[i].id);
                         btnDel.on('click', function () {
                             $.ajax({
-                                url: '/rest/admin/domain/del/' + this.name,
+                                url: '/admin/domain/del/' + this.name,
                                 success: updateOrg
                             })
                         });
@@ -168,7 +168,7 @@
     function setOrgName() {
         if ($('#adminOrgName').checkValidity()) {
             $.ajax({
-                url: '/rest/admin/org/name/' + $('#adminOrgName').val(),
+                url: '/admin/org/name/' + $('#adminOrgName').val(),
                 success: updateOrg
             })
         }
@@ -182,7 +182,7 @@
         btnApply.on('click', function () {
             if (name[0].checkValidity()) {
                 $.ajax({
-                    url: '/rest/admin/domain/new/' + name.val(),
+                    url: '/admin/domain/new/' + name.val(),
                     success: updateOrg
                 })
             }
@@ -212,7 +212,7 @@
             if (inputName[0].checkValidity()) {
                 let doDefault = check[0].disabled ? false : check[0].checked;
                 $.ajax({
-                    url: '/rest/admin/domain/edit/' + id + '/' + inputName.val() + '/' + doDefault,
+                    url: '/admin/domain/edit/' + id + '/' + inputName.val() + '/' + doDefault,
                     success: updateOrg
                 });
             }
@@ -222,20 +222,20 @@
         row.append($('<td></td>').append(btnCancel));
     }
     (() => $.ajax({
-            url: '/rest/admin/roles',
+            url: '/admin/roles',
             success: function (data) {
                 userRoles = data;
             }
         }))();
     (() => $.ajax({
-            url: '/rest/admin/status',
+            url: '/admin/status',
             success: function (data) {
                 userStatus = data;
             }
         }))();
     function updateUsers() {
         $.ajax({
-           url: '/rest/admin/users/get' + usersPager.string(),
+           url: '/admin/users/get' + usersPager.string(),
            success: function (data) {
                let table = $('#usersTable');
                table.html('');
@@ -262,7 +262,7 @@
         pager.html('');
         for (let i = 0; i < data.totalPages; i++) {
             let item = $('<li class="page-item"></li>');
-            if (i === data.number) {
+            if (i == data.number) {
                 item.addClass('active');
             }
             let link = $('<a class="page-link"></a>').text(i + 1);
@@ -304,7 +304,7 @@
         userRoles.forEach(function (val) {
            const selectOption = $('<option></option>').text(val);
            selectOption.val(val);
-           if (val === role) {
+           if (val == role) {
                selectOption.attr('selected', 'selected');
            }
            selectRole.append(selectOption);
@@ -314,7 +314,7 @@
         userStatus.forEach(function (val) {
             const selectOption = $('<option></option>').text(val);
             selectOption.val(val);
-            if (val === status) {
+            if (val == status) {
                 selectOption.attr('selected', 'selected');
             }
             selectStatus.append(selectOption);
@@ -332,7 +332,7 @@
     function editUserApply(event) {
         if (event.data.name[0].checkValidity() && event.data.surname[0].checkValidity()) {
             $.ajax({
-                url: '/rest/admin/user/edit',
+                url: '/admin/user/edit',
                 method: 'POST',
                 data: {"_csrf": $('meta[name="_csrf_token"]').attr('content'),
                         'id': event.data.id,
@@ -347,7 +347,7 @@
     }
     function fillUserSelect() {
         $.ajax({
-           url: '/rest/admin/users/get?size=9999&sort=login',
+           url: '/admin/users/get?size=9999&sort=login',
            success: function (data) {
                let userSelect = $('#userAliasSelect');
                userSelect.html('');
@@ -363,7 +363,7 @@
     function showUserAliases() {
         const userId = $('#userAliasSelect').val();
         $.ajax({
-            url: '/rest/admin/user/aliases/' + userId,
+            url: '/admin/user/aliases/' + userId,
             success: function (data) {
                 const table = $('#userAliasTable');
                 table.html('');
@@ -380,7 +380,7 @@
                         const btnDel = $('<button class="btn btn-sm btn-danger">&times;</button>').attr('name', data[i].id);
                         btnDel.on('click', function () {
                             $.ajax({
-                                url: '/rest/admin/user/alias/delete/' + this.name,
+                                url: '/admin/user/alias/delete/' + this.name,
                                 success: showUserAliases
                             })
                         });
@@ -417,7 +417,7 @@
                if (name[0].checkValidity()) {
                    const value = name.val() + '@' + select.val();
                    $.ajax({
-                       url: '/rest/admin/user/' + userId + '/alias/add/' + value,
+                       url: '/admin/user/' + userId + '/alias/add/' + value,
                        success: showUserAliases
                    })
                }
@@ -445,7 +445,7 @@
             const option = $('<option></option>');
             option.text(domain);
             option.val(domain);
-            if (domain === domainName) {
+            if (domain == domainName) {
                 option.attr('selected', 'selected');
             }
             select.append(option);
@@ -464,7 +464,7 @@
             if (inputName[0].checkValidity()) {
                 let doDefault = check[0].disabled ? false : check[0].checked;
                 $.ajax({
-                    url: '/rest/admin/alias/edit/' + id + '/' + inputName.val() + '@' + select.val() + '/' + doDefault,
+                    url: '/admin/alias/edit/' + id + '/' + inputName.val() + '@' + select.val() + '/' + doDefault,
                     success: showUserAliases
                 })
             }

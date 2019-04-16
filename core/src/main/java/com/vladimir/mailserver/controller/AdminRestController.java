@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/rest/admin")
+@RequestMapping("/admin")
 public class AdminRestController {
     private OrgSettingsService orgSettingsService;
     private UserService userService;

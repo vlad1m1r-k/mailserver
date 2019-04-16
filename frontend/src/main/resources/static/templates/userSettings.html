@@ -111,8 +111,8 @@
             return '?size=' + this.size + '&page=' + this.page + '&sort=' + this.sortField + ',' + this.direction
         },
         setSort: function (name) {
-            if (this.sortField === name) {
-                this.direction = this.direction === 'desc' ? 'asc' : 'desc';
+            if (this.sortField == name) {
+                this.direction = this.direction == 'desc' ? 'asc' : 'desc';
             } else {
                 this.sortField = name;
                 this.direction = 'asc';
@@ -120,7 +120,7 @@
         }
     };
     $.ajax({
-        url: '/rest/user/get',
+        url: '/user/get',
         success: function (user) {
             $('#editUserName').val(user.name);
             $('#editUserSurname').val(user.surname);
@@ -160,7 +160,7 @@
         }
         if (isValid) {
             $.ajax({
-                url: "/rest/user/update",
+                url: "/user/update",
                 type: "post",
                 data: {
                     "name": this.name.value,
@@ -198,7 +198,7 @@
             const name = $('#newAddrName').val();
             const addr = $('#newAddrMail').val();
             $.ajax({
-                url: '/rest/address/add/' + name + '/' + addr,
+                url: '/address/add/' + name + '/' + addr,
                 success: function (result) {
                     if (result) {
                         $('#newAddrName').val('');
@@ -218,7 +218,7 @@
 
     function updateAddresses() {
         $.ajax({
-            url: '/rest/address/get' + page.string(),
+            url: '/address/get' + page.string(),
             success: function (data) {
                 $('#tableAddresses').html('');
                 for (let i = 0; i < data.content.length; i++) {
@@ -240,7 +240,7 @@
 
     function deleteContact() {
         $.ajax({
-            url: '/rest/address/delete/' + this.name,
+            url: '/address/delete/' + this.name,
             success: updateAddresses
         })
     }
@@ -266,7 +266,7 @@
     function editContSave(event) {
         if (event.data.name[0].checkValidity() && event.data.addr[0].checkValidity()) {
             $.ajax({
-                url: '/rest/address/edit/' + event.data.id + '/' + event.data.name.val() + '/' + event.data.addr.val(),
+                url: '/address/edit/' + event.data.id + '/' + event.data.name.val() + '/' + event.data.addr.val(),
                 success: updateAddresses
             })
         }
@@ -277,7 +277,7 @@
         pager.html('');
         for (let i = 0; i < data.totalPages; i++) {
             let item = $('<li class="page-item"></li>');
-            if (i === data.number) {
+            if (i == data.number) {
                 item.addClass('active');
             }
             let link = $('<a class="page-link"></a>').text(i + 1);
