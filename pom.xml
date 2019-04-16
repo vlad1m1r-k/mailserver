@@ -8,6 +8,11 @@
     <artifactId>mailserver</artifactId>
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
+    <properties>
+        <mysql.connector.verion>8.0.15</mysql.connector.verion>
+        <maven.plugin.verion>2.1.3.RELEASE</maven.plugin.verion>
+        <maven.compiler.plugin.version>3.8.0</maven.compiler.plugin.version>
+    </properties>
     <modules>
         <module>core</module>
         <module>frontend</module>
@@ -35,7 +40,7 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.15</version>
+            <version>${mysql.connector.verion}</version>
         </dependency>
         <dependency>
             <groupId>org.liquibase</groupId>
