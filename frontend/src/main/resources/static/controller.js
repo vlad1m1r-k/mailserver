@@ -11,8 +11,8 @@ let pagerInc = {
         return '?size=' + this.size + '&page=' + this.page + '&sort=' + this.sortField + ',' + this.direction
     },
     setSort: function (name) {
-        if (this.sortField === name) {
-            this.direction = this.direction === 'desc' ? 'asc' : 'desc';
+        if (this.sortField == name) {
+            this.direction = this.direction == 'desc' ? 'asc' : 'desc';
         } else {
             this.sortField = name;
             this.direction = 'asc';
@@ -28,8 +28,8 @@ let pagerSend = {
         return '?size=' + this.size + '&page=' + this.page + '&sort=' + this.sortField + ',' + this.direction
     },
     setSort: function (name) {
-        if (this.sortField === name) {
-            this.direction = this.direction === 'desc' ? 'asc' : 'desc';
+        if (this.sortField == name) {
+            this.direction = this.direction == 'desc' ? 'asc' : 'desc';
         } else {
             this.sortField = name;
             this.direction = 'asc';
@@ -46,8 +46,8 @@ let pagerDel = {
     },
     setSort: function (name) {
         name = name.toLowerCase();
-        if (this.sortField === name) {
-            this.direction = this.direction === 'desc' ? 'asc' : 'desc';
+        if (this.sortField == name) {
+            this.direction = this.direction == 'desc' ? 'asc' : 'desc';
         } else {
             this.sortField = name;
             this.direction = 'asc';
@@ -74,18 +74,18 @@ $('#btnAdminSettings').on('click', viewAdminSettings);
 
 function viewMail(event) {
     let mailData;
-    if (this.parentElement.id === 'table-incoming') {
+    if (this.parentElement.id == 'table-incoming') {
         mailData = incomingMailList;
     }
-    if (this.parentElement.id === 'table-send') {
+    if (this.parentElement.id == 'table-send') {
         mailData = sendMailList;
     }
-    if (this.parentElement.id === 'table-deleted') {
+    if (this.parentElement.id == 'table-deleted') {
         mailData = deletedMailList;
     }
     let mail;
     for (const val of mailData) {
-        if (val.id === event.currentTarget.id) {
+        if (val.id == event.currentTarget.id) {
             mail = val;
             break;
         }
@@ -112,7 +112,7 @@ function viewMail(event) {
 function updateIncoming() {
     $('input:checkbox').prop('checked', false);
     $.ajax({
-        url: "/rest/mail/get/incoming" + pagerInc.string(),
+        url: "/mail/get/incoming" + pagerInc.string(),
         success: function (data) {
             incomingMailList = data.content;
             $('#table-incoming').html("");
@@ -143,7 +143,7 @@ function updateIncoming() {
 function updateSend() {
     $('input:checkbox').prop('checked', false);
     $.ajax({
-        url: "/rest/mail/get/sent" + pagerSend.string(),
+        url: "/mail/get/sent" + pagerSend.string(),
         success: function (data) {
             sendMailList = data.content;
             $('#table-send').html("");
@@ -174,7 +174,7 @@ function updateSend() {
 function updateDeleted() {
     $('input:checkbox').prop('checked', false);
     $.ajax({
-        url: "/rest/mail/get/deleted" + pagerDel.string(),
+        url: "/mail/get/deleted" + pagerDel.string(),
         success: function (data) {
             deletedMailList = data.content;
             $('#table-deleted').html("");
@@ -212,12 +212,12 @@ function checkAll() {
 
 function deleteMail() {
     let update;
-    if (this.name === 'table-incoming') update = updateIncoming;
-    if (this.name === 'table-send') update = updateSend;
-    if (this.name === 'table-deleted') update = updateDeleted;
+    if (this.name == 'table-incoming') update = updateIncoming;
+    if (this.name == 'table-send') update = updateSend;
+    if (this.name == 'table-deleted') update = updateDeleted;
     $('#'+this.name).find(':checked').each(function () {
         $.ajax({
-            url: '/rest/mail/delete/' + $(this).val(),
+            url: '/mail/delete/' + $(this).val(),
             success: function () {
                 update();
             }
@@ -228,7 +228,7 @@ function deleteMail() {
 $('#btnRestore').on('click', function () {
     $('#table-deleted').find(':checked').each(function () {
         $.ajax({
-            url: '/rest/mail/restore/' + $(this).val(),
+            url: '/mail/restore/' + $(this).val(),
             success: function () {
                 updateDeleted();
             }
@@ -241,7 +241,7 @@ function mailProcess() {
     $('#window-modal').modal('hide');
     $('#window-modal').modal('dispose');
     $('#window-modal').load('static/templates/newMail.html', function () {
-        if (button === 'btnAnswer') {
+        if (button == 'btnAnswer') {
             $('#new-mail-to').val(currentMail.from);
             $('#new-mail-subj').val("RE: " + currentMail.subject);
             let body = "\n> " + currentMail.message.replace(/\n/g, "\n> ");
@@ -272,7 +272,7 @@ function drawPager(data, pager, updater, pagerSettings) {
     pager.html('');
     for (let i = 0; i < data.totalPages; i++) {
         let item = $('<li class="page-item"></li>');
-        if (i === data.number) {
+        if (i == data.number) {
             item.addClass('active');
         }
         let link = $('<a class="page-link"></a>').text(i + 1);

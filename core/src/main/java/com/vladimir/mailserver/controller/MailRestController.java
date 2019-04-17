@@ -19,7 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @RestController
-@RequestMapping("/rest/mail")
+@RequestMapping("/mail")
 public class MailRestController {
     private MailService mailService;
 

@@ -81,8 +81,8 @@
             return '?size=' + this.size + '&page=' + this.page + '&sort=' + this.sortField + ',' + this.direction
         },
         setSort: function (name) {
-            if (this.sortField === name) {
-                this.direction = this.direction === 'desc' ? 'asc' : 'desc';
+            if (this.sortField == name) {
+                this.direction = this.direction == 'desc' ? 'asc' : 'desc';
             } else {
                 this.sortField = name;
                 this.direction = 'asc';
@@ -106,7 +106,7 @@
                 data.append('files', file);
             });
             $.ajax({
-                url: "/rest/mail/send",
+                url: "/mail/send",
                 type: "post",
                 beforeSend: function (request) {
                     request.setRequestHeader("X-CSRF-TOKEN", $('meta[name="_csrf_token"]').attr('content'));
@@ -128,7 +128,7 @@
     }
     function fillAddrTable() {
         $.ajax({
-            url: '/rest/address/get' + newMailAddrPager.string(),
+            url: '/address/get' + newMailAddrPager.string(),
             success: function (data) {
                 $('#adrBookTableBody').html('');
                 for (let i = 0; i < data.content.length; i++) {
@@ -149,7 +149,7 @@
         pager.html('');
         for (let i = 0; i < data.totalPages; i++) {
             let item = $('<li class="page-item"></li>');
-            if (i === data.number) {
+            if (i == data.number) {
                 item.addClass('active');
             }
             let link = $('<a class="page-link"></a>').text(i + 1);
@@ -175,7 +175,7 @@
     }
     function addNewMailAddress() {
         let field = $('#new-mail-to');
-        if (field.val() === '') {
+        if (field.val() == '') {
             field.val(this.name)
         } else {
             field.val(field.val() + ', ' + this.name);
@@ -186,12 +186,12 @@
         for (let i = 0; i < this.files.length; i++) {
             files.push(this.files[i]);
         }
-        if (newMailFiles.length === 0) {
+        if (newMailFiles.length == 0) {
             newMailFiles = files;
         } else {
             files = files.filter(function (file) {
                 for (let i = 0; i < newMailFiles.length; i++) {
-                    if (file.name === newMailFiles[i].name) {
+                    if (file.name == newMailFiles[i].name) {
                         return false;
                     }
                 }
