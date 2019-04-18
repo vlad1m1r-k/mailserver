@@ -6,7 +6,7 @@ import org.junit.Test;
 public class AcceptedDomainsDtoTest {
     @Test
     public void testAcceptedDomainDto() {
-        AcceptedDomainsDto dto = new AcceptedDomainsDto.Builder()
+        AcceptedDomainsDto dto = AcceptedDomainsDto.builder()
                 .id(2L)
                 .name("name")
                 .isDefault(false)

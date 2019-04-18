@@ -6,7 +6,7 @@ import org.junit.Test;
 public class AttachmentDtoTest {
     @Test
     public void testAttachmentDto() {
-        AttachmentDto dto = new AttachmentDto.Builder()
+        AttachmentDto dto = AttachmentDto.builder()
                 .id(2L)
                 .name("name")
                 .size(3L)

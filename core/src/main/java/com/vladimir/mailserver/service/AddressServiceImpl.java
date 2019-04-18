@@ -24,7 +24,7 @@ public class AddressServiceImpl implements AddressService {
     public Page<AddressDto> getAddressesDto(String login, Pageable pageable) {
         MailUser user = userService.find(login);
         Page<Address> addresses = addressRepository.findAllByUser(user, pageable);
-        return addresses.map(address -> new AddressDto.Builder()
+        return addresses.map(address -> AddressDto.builder()
                 .id(address.getId())
                 .name(address.getName())
                 .address(address.getAddress())

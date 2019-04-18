@@ -59,12 +59,12 @@ public class OrgSettingsServiceImpl implements OrgSettingsService {
     @Transactional(readOnly = true)
     public OrgSettingsDto getOrgSettings() {
         OrganizationSettings orgSettings = orgSettingsRepository.findOne();
-        List<AcceptedDomainsDto> domainsDtos = orgSettings.getAcceptedDomains().stream().map(dm -> new AcceptedDomainsDto.Builder()
+        List<AcceptedDomainsDto> domainsDtos = orgSettings.getAcceptedDomains().stream().map(dm -> AcceptedDomainsDto.builder()
         .id(dm.getId())
         .name(dm.getName())
         .isDefault(dm.isDefault())
         .build()).collect(Collectors.toList());
-        return new OrgSettingsDto.Builder()
+        return OrgSettingsDto.builder()
                 .name(orgSettings.getName())
                 .domains(domainsDtos)
                 .build();

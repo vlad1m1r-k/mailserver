@@ -23,6 +23,10 @@ public class AcceptedDomainsDto {
         return isDefault;
     }
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
     public static class Builder {
         private Long id;
         private String name;

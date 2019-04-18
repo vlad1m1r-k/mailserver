@@ -122,13 +122,13 @@ public class MailServiceImpl implements MailService {
 
     private Page<MailDto> dtoWrap(Page<Mail> mailPage) {
         return mailPage.map(mail -> {
-            List<AttachmentDto> attDtos = mail.getAttachments().stream().map(att -> new AttachmentDto.Builder()
+            List<AttachmentDto> attDtos = mail.getAttachments().stream().map(att -> AttachmentDto.builder()
                     .id(att.getId())
                     .name(att.getName())
                     .size(att.getSize())
                     .build())
                     .collect(Collectors.toList());
-            return new MailDto.Builder()
+            return MailDto.builder()
                     .id(mail.getId())
                     .from(mail.getFrom())
                     .to(mail.getTo())

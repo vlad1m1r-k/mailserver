@@ -8,7 +8,7 @@ import org.junit.Test;
 public class MailUserDtoTest {
     @Test
     public void testMailUserDto() {
-        MailUserDto dto = new MailUserDto.Builder()
+        MailUserDto dto = MailUserDto.builder()
                 .id(2L)
                 .name("name")
                 .surname("surname")

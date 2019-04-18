@@ -50,6 +50,10 @@ public class MailDto {
         return attachments;
     }
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
     public static class Builder {
         private Long id;
         private String from;

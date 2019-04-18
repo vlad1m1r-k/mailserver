@@ -11,8 +11,8 @@ public class MailDtoTest {
     @Test
     public void testMailDto() {
         List<AttachmentDto> attachmentDtos = new ArrayList<>();
-        attachmentDtos.add(new AttachmentDto.Builder().build());
-        MailDto dto = new MailDto.Builder()
+        attachmentDtos.add(AttachmentDto.builder().build());
+        MailDto dto = MailDto.builder()
                 .id(2L)
                 .from("from")
                 .to("to")
