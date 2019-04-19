@@ -19,6 +19,10 @@ public class OrgSettingsDto {
         return domains;
     }
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
     public static class Builder {
         private String name;
         private List<AcceptedDomainsDto> domains;

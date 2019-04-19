@@ -6,7 +6,7 @@ import org.junit.Test;
 public class MailboxAliasDtoTest {
     @Test
     public void testMailboxAliasDto() {
-        MailboxAliasDto dto = new MailboxAliasDto.Builder()
+        MailboxAliasDto dto = MailboxAliasDto.builder()
                 .id(2L)
                 .name("name")
                 .isDefault(true)

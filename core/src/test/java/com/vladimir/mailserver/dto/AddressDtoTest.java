@@ -7,7 +7,7 @@ import static org.junit.Assert.assertEquals;
 public class AddressDtoTest {
     @Test
     public void testAddressDto() {
-        AddressDto dto = new AddressDto.Builder()
+        AddressDto dto = AddressDto.builder()
                 .id(2L)
                 .name("name")
                 .address("address")

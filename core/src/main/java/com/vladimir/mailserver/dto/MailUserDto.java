@@ -50,6 +50,10 @@ public class MailUserDto {
         return status;
     }
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
     public static class Builder {
         private Long id;
         private String name;

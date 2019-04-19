@@ -10,8 +10,8 @@ public class OrgSettingsDtoTest {
     @Test
     public void testOrgSettingsDto() {
         List<AcceptedDomainsDto> domainsDtoList = new ArrayList<>();
-        domainsDtoList.add(new AcceptedDomainsDto.Builder().build());
-        OrgSettingsDto dto = new OrgSettingsDto.Builder()
+        domainsDtoList.add(AcceptedDomainsDto.builder().build());
+        OrgSettingsDto dto = OrgSettingsDto.builder()
                 .name("name")
                 .domains(domainsDtoList)
                 .build();

@@ -60,7 +60,7 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     public MailUserDto getUserDto(String login) {
         MailUser user = find(login);
-        return new MailUserDto.Builder()
+        return MailUserDto.builder()
                 .name(user.getName())
                 .surname(user.getSurname())
                 .login(user.getLogin())
@@ -89,7 +89,7 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     public Page<MailUserDto> getUsers(Pageable pageable) {
         Page<MailUser> users = userRepository.findAll(pageable);
-        return users.map(user -> new MailUserDto.Builder()
+        return users.map(user -> MailUserDto.builder()
                 .id(user.getId())
                 .name(user.getName())
                 .surname(user.getSurname())
@@ -119,7 +119,7 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     public List<MailboxAliasDto> getAliases(Long userId) {
         MailUser user = userRepository.getOne(userId);
-        return user.getMailbox().getAliases().stream().map(als -> new MailboxAliasDto.Builder()
+        return user.getMailbox().getAliases().stream().map(als -> MailboxAliasDto.builder()
                 .id(als.getId())
                 .name(als.getValue())
                 .isDefault(als.isDefault())

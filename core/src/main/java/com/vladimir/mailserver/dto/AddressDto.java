@@ -23,6 +23,10 @@ public class AddressDto {
         return address;
     }
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
     public static class Builder {
         private long id;
         private String name;
