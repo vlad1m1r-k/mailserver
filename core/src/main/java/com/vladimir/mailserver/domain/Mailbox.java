@@ -8,10 +8,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 @Entity
 @Table(name = "mailboxes")
@@ -25,10 +25,10 @@ public class Mailbox {
     private MailUser user;
 
     @OneToMany(mappedBy = "mailbox")
-    private List<Mail> mails = new ArrayList<>();
+    private Set<Mail> mails = new HashSet<>();
 
     @OneToMany(mappedBy = "mailbox")
-    private List<MailboxAlias> aliases = new ArrayList<>();
+    private Set<MailboxAlias> aliases = new HashSet<>();
 
     public Mailbox() {
     }
@@ -53,7 +53,7 @@ public class Mailbox {
         throw new IllegalStateException("No default alias found");
     }
 
-    public List<MailboxAlias> getAliases() {
+    public Set<MailboxAlias> getAliases() {
         return aliases;
     }
 

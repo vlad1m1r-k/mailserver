@@ -12,9 +12,9 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "mails")
@@ -44,7 +44,7 @@ public class Mail {
     private Date date;
 
     @OneToMany(mappedBy = "mail")
-    private List<Attachment> attachments = new ArrayList<>();
+    private Set<Attachment> attachments = new HashSet<>();
 
     public Mail() {
     }
@@ -103,7 +103,7 @@ public class Mail {
         isDeleted = deleted;
     }
 
-    public List<Attachment> getAttachments() {
+    public Set<Attachment> getAttachments() {
         return attachments;
     }
 }

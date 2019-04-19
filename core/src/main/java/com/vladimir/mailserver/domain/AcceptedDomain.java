@@ -9,8 +9,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "accepted_domains")
@@ -26,7 +26,7 @@ public class AcceptedDomain {
     private OrganizationSettings organization;
 
     @OneToMany(mappedBy = "domain", fetch = FetchType.EAGER)
-    private List<MailboxAlias> aliases = new ArrayList<>();
+    private Set<MailboxAlias> aliases = new HashSet<>();
 
     public AcceptedDomain() {
     }
@@ -48,7 +48,7 @@ public class AcceptedDomain {
         return isDefault;
     }
 
-    public List<MailboxAlias> getAliases() {
+    public Set<MailboxAlias> getAliases() {
         return aliases;
     }
 
