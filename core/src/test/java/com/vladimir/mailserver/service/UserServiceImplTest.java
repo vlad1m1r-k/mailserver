@@ -27,7 +27,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = UserServiceImpl.class)
@@ -192,14 +194,13 @@ public class UserServiceImplTest {
         Mockito.when(userRepository.getOne(Mockito.anyLong())).thenReturn(user);
         Mailbox mailbox = Mockito.mock(Mailbox.class);
         Mockito.when(user.getMailbox()).thenReturn(mailbox);
-        List<MailboxAlias> aliasList = new ArrayList<>();
-        aliasList.add(new MailboxAlias("alias1", null, false, null));
-        aliasList.add(new MailboxAlias("alias2", null, true, null));
-        Mockito.when(mailbox.getAliases()).thenReturn(aliasList);
+        Set<MailboxAlias> aliasSet = new HashSet<>();
+        aliasSet.add(new MailboxAlias("alias1", null, false, null));
+        aliasSet.add(new MailboxAlias("alias2", null, true, null));
+        Mockito.when(mailbox.getAliases()).thenReturn(aliasSet);
         List<MailboxAliasDto> aliasDtos = usi.getAliases(2L);
         Mockito.verify(userRepository).getOne(ArgumentMatchers.eq(2L));
-        Assert.assertEquals("alias2", aliasDtos.get(1).getName());
-        Assert.assertTrue(aliasDtos.get(1).getDefault());
+        Assert.assertEquals(2, aliasDtos.size());
     }
 
     @Test

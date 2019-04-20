@@ -5,8 +5,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class MailboxTest {
     private Mailbox mailbox;
@@ -20,13 +20,13 @@ public class MailboxTest {
     public void testGetDefaultAliasSuccess() throws NoSuchFieldException, IllegalAccessException {
         Field aliases = Mailbox.class.getDeclaredField("aliases");
         aliases.setAccessible(true);
-        List<MailboxAlias> aliasList = new ArrayList<>();
-        aliasList.add(new MailboxAlias(null, null, false, null));
-        aliasList.add(new MailboxAlias(null, null, false, null));
-        aliasList.add(new MailboxAlias(null, null, true, null));
-        aliasList.add(new MailboxAlias(null, null, false, null));
-        aliasList.add(new MailboxAlias(null, null, false, null));
-        aliases.set(mailbox, aliasList);
+        Set<MailboxAlias> aliasSet = new HashSet<>();
+        aliasSet.add(new MailboxAlias(null, null, false, null));
+        aliasSet.add(new MailboxAlias(null, null, false, null));
+        aliasSet.add(new MailboxAlias(null, null, true, null));
+        aliasSet.add(new MailboxAlias(null, null, false, null));
+        aliasSet.add(new MailboxAlias(null, null, false, null));
+        aliases.set(mailbox, aliasSet);
         MailboxAlias defaultAlias = mailbox.getDefaultAlias();
         Assert.assertTrue(defaultAlias.isDefault());
     }
@@ -35,13 +35,13 @@ public class MailboxTest {
     public void testGetDefaultAliasNotFound() throws NoSuchFieldException, IllegalAccessException {
         Field aliases = Mailbox.class.getDeclaredField("aliases");
         aliases.setAccessible(true);
-        List<MailboxAlias> aliasList = new ArrayList<>();
-        aliasList.add(new MailboxAlias(null, null, false, null));
-        aliasList.add(new MailboxAlias(null, null, false, null));
-        aliasList.add(new MailboxAlias(null, null, false, null));
-        aliasList.add(new MailboxAlias(null, null, false, null));
-        aliasList.add(new MailboxAlias(null, null, false, null));
-        aliases.set(mailbox, aliasList);
+        Set<MailboxAlias> aliasSet = new HashSet<>();
+        aliasSet.add(new MailboxAlias(null, null, false, null));
+        aliasSet.add(new MailboxAlias(null, null, false, null));
+        aliasSet.add(new MailboxAlias(null, null, false, null));
+        aliasSet.add(new MailboxAlias(null, null, false, null));
+        aliasSet.add(new MailboxAlias(null, null, false, null));
+        aliases.set(mailbox, aliasSet);
         MailboxAlias defaultAlias = mailbox.getDefaultAlias();
     }
 }

@@ -16,7 +16,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -137,7 +136,7 @@ public class OrgSettingsServiceImplTest {
     public void testDeleteDomainSuccess() {
         AcceptedDomain domain = Mockito.mock(AcceptedDomain.class);
         Mockito.when(domain.isDefault()).thenReturn(false);
-        Mockito.when(domain.getAliases()).thenReturn(new ArrayList<>());
+        Mockito.when(domain.getAliases()).thenReturn(new HashSet<>());
         Mockito.when(acceptedDomainRepository.findAcceptedDomainById(Mockito.anyLong())).thenReturn(domain);
         boolean result = oss.deleteDomain(2L);
         Mockito.verify(acceptedDomainRepository).findAcceptedDomainById(ArgumentMatchers.eq(2L));
@@ -149,7 +148,7 @@ public class OrgSettingsServiceImplTest {
     public void testDeleteDomainFailByDefault() {
         AcceptedDomain domain = Mockito.mock(AcceptedDomain.class);
         Mockito.when(domain.isDefault()).thenReturn(true);
-        Mockito.when(domain.getAliases()).thenReturn(new ArrayList<>());
+        Mockito.when(domain.getAliases()).thenReturn(new HashSet<>());
         Mockito.when(acceptedDomainRepository.findAcceptedDomainById(Mockito.anyLong())).thenReturn(domain);
         boolean result = oss.deleteDomain(2L);
         Mockito.verify(acceptedDomainRepository).findAcceptedDomainById(ArgumentMatchers.eq(2L));
@@ -161,7 +160,7 @@ public class OrgSettingsServiceImplTest {
     public void testDeleteDomainFailByAliases() {
         AcceptedDomain domain = Mockito.mock(AcceptedDomain.class);
         Mockito.when(domain.isDefault()).thenReturn(false);
-        Mockito.when(domain.getAliases()).thenReturn(Arrays.asList(new MailboxAlias(), new MailboxAlias()));
+        Mockito.when(domain.getAliases()).thenReturn(new HashSet<>(Arrays.asList(new MailboxAlias(), new MailboxAlias())));
         Mockito.when(acceptedDomainRepository.findAcceptedDomainById(Mockito.anyLong())).thenReturn(domain);
         boolean result = oss.deleteDomain(2L);
         Mockito.verify(acceptedDomainRepository).findAcceptedDomainById(ArgumentMatchers.eq(2L));

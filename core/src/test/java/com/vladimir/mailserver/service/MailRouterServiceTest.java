@@ -19,7 +19,9 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = MailRouterService.class)
@@ -49,11 +51,11 @@ public class MailRouterServiceTest {
         final Mail[] mail = new Mail[1];
         Mockito.doAnswer(o -> mail[0] = o.getArgument(0)).when(mailService).save(Mockito.any());
         Mockito.when(orgSettingsService.isDomainLocal("localhost")).thenReturn(true);
-        List<MailboxAlias> mailboxAliasList = new ArrayList<>();
+        Set<MailboxAlias> aliasSet = new HashSet<>();
         Mailbox mailbox = new Mailbox();
-        mailboxAliasList.add(new MailboxAlias("to@localhost", mailbox, true, null));
+        aliasSet.add(new MailboxAlias("to@localhost", mailbox, true, null));
         AcceptedDomain domain = Mockito.mock(AcceptedDomain.class);
-        Mockito.when(domain.getAliases()).thenReturn(mailboxAliasList);
+        Mockito.when(domain.getAliases()).thenReturn(aliasSet);
         Mockito.when(orgSettingsService.getDomainByName("localhost")).thenReturn(domain);
         mrs.processMail(event);
         Mockito.verify(mailService).save(ArgumentMatchers.any(Mail.class));
@@ -72,12 +74,12 @@ public class MailRouterServiceTest {
     public void testProcessMailMultipleRecipientSuccess() {
         NewMailEvent event = new NewMailEvent(this, "from@localhost", "to@localhost, to2@localhost, to3@localhost", "subject", "body");
         Mockito.when(orgSettingsService.isDomainLocal("localhost")).thenReturn(true);
-        List<MailboxAlias> mailboxAliasList = new ArrayList<>();
-        mailboxAliasList.add(new MailboxAlias("to@localhost", new Mailbox(), true, null));
-        mailboxAliasList.add(new MailboxAlias("to2@localhost", new Mailbox(), true, null));
-        mailboxAliasList.add(new MailboxAlias("to3@localhost", new Mailbox(), true, null));
+        Set<MailboxAlias> mailboxAliasSet = new HashSet<>();
+        mailboxAliasSet.add(new MailboxAlias("to@localhost", new Mailbox(), true, null));
+        mailboxAliasSet.add(new MailboxAlias("to2@localhost", new Mailbox(), true, null));
+        mailboxAliasSet.add(new MailboxAlias("to3@localhost", new Mailbox(), true, null));
         AcceptedDomain domain = Mockito.mock(AcceptedDomain.class);
-        Mockito.when(domain.getAliases()).thenReturn(mailboxAliasList);
+        Mockito.when(domain.getAliases()).thenReturn(mailboxAliasSet);
         Mockito.when(orgSettingsService.getDomainByName("localhost")).thenReturn(domain);
         mrs.processMail(event);
         Mockito.verify(mailService, Mockito.times(3)).save(ArgumentMatchers.any(Mail.class));
@@ -92,11 +94,11 @@ public class MailRouterServiceTest {
         NewMailEvent event = new NewMailEvent(this, "from@localhost", "to@localhost", "subject",
                 "body", attachmentList);
         Mockito.when(orgSettingsService.isDomainLocal("localhost")).thenReturn(true);
-        List<MailboxAlias> mailboxAliasList = new ArrayList<>();
+        Set<MailboxAlias> mailboxAliasSet = new HashSet<>();
         Mailbox mailbox = new Mailbox();
-        mailboxAliasList.add(new MailboxAlias("to@localhost", mailbox, true, null));
+        mailboxAliasSet.add(new MailboxAlias("to@localhost", mailbox, true, null));
         AcceptedDomain domain = Mockito.mock(AcceptedDomain.class);
-        Mockito.when(domain.getAliases()).thenReturn(mailboxAliasList);
+        Mockito.when(domain.getAliases()).thenReturn(mailboxAliasSet);
         Mockito.when(orgSettingsService.getDomainByName("localhost")).thenReturn(domain);
         mrs.processMail(event);
         Mockito.verify(mailService).save(ArgumentMatchers.any(Mail.class));
@@ -111,11 +113,11 @@ public class MailRouterServiceTest {
         final NewMailEvent[] newEvent = new NewMailEvent[1];
         Mockito.doAnswer(o -> newEvent[0] = o.getArgument(0)).when(applicationEventPublisher).publishEvent(Mockito.any());
         Mockito.when(orgSettingsService.isDomainLocal("localhost")).thenReturn(true);
-        List<MailboxAlias> mailboxAliasList = new ArrayList<>();
+        Set<MailboxAlias> mailboxAliasSet = new HashSet<>();
         Mailbox mailbox = new Mailbox();
-        mailboxAliasList.add(new MailboxAlias("to@localhost", mailbox, true, null));
+        mailboxAliasSet.add(new MailboxAlias("to@localhost", mailbox, true, null));
         AcceptedDomain domain = Mockito.mock(AcceptedDomain.class);
-        Mockito.when(domain.getAliases()).thenReturn(mailboxAliasList);
+        Mockito.when(domain.getAliases()).thenReturn(mailboxAliasSet);
         Mockito.when(orgSettingsService.getDomainByName("localhost")).thenReturn(domain);
         mrs.processMail(event);
         Mockito.verify(mailService, Mockito.never()).save(ArgumentMatchers.any(Mail.class));
@@ -131,12 +133,12 @@ public class MailRouterServiceTest {
     public void testProcessMailMiscRecipientsSuccess() {
         NewMailEvent event = new NewMailEvent(this, "from@localhost", "to@localhost, to2@externhost, to3@localhost", "subject", "body");
         Mockito.when(orgSettingsService.isDomainLocal("localhost")).thenReturn(true);
-        List<MailboxAlias> mailboxAliasList = new ArrayList<>();
-        mailboxAliasList.add(new MailboxAlias("to@localhost", new Mailbox(), true, null));
-        mailboxAliasList.add(new MailboxAlias("to2@localhost", new Mailbox(), true, null));
-        mailboxAliasList.add(new MailboxAlias("to3@localhost", new Mailbox(), true, null));
+        Set<MailboxAlias> mailboxAliasSet = new HashSet<>();
+        mailboxAliasSet.add(new MailboxAlias("to@localhost", new Mailbox(), true, null));
+        mailboxAliasSet.add(new MailboxAlias("to2@localhost", new Mailbox(), true, null));
+        mailboxAliasSet.add(new MailboxAlias("to3@localhost", new Mailbox(), true, null));
         AcceptedDomain domain = Mockito.mock(AcceptedDomain.class);
-        Mockito.when(domain.getAliases()).thenReturn(mailboxAliasList);
+        Mockito.when(domain.getAliases()).thenReturn(mailboxAliasSet);
         Mockito.when(orgSettingsService.getDomainByName("localhost")).thenReturn(domain);
         mrs.processMail(event);
         Mockito.verify(mailService, Mockito.times(2)).save(ArgumentMatchers.any(Mail.class));
@@ -148,10 +150,10 @@ public class MailRouterServiceTest {
     public void testProcessMailUserNotFound() {
         NewMailEvent event = new NewMailEvent(this, "from@localhost", "to@localhost", "subject", "body");
         Mockito.when(orgSettingsService.isDomainLocal("localhost")).thenReturn(true);
-        List<MailboxAlias> mailboxAliasList = new ArrayList<>();
-        mailboxAliasList.add(new MailboxAlias("to2@localhost", new Mailbox(), true, null));
+        Set<MailboxAlias> mailboxAliasSet = new HashSet<>();
+        mailboxAliasSet.add(new MailboxAlias("to2@localhost", new Mailbox(), true, null));
         AcceptedDomain domain = Mockito.mock(AcceptedDomain.class);
-        Mockito.when(domain.getAliases()).thenReturn(mailboxAliasList);
+        Mockito.when(domain.getAliases()).thenReturn(mailboxAliasSet);
         Mockito.when(orgSettingsService.getDomainByName("localhost")).thenReturn(domain);
         mrs.processMail(event);
         Mockito.verify(mailService, Mockito.never()).save(ArgumentMatchers.any());
@@ -163,10 +165,10 @@ public class MailRouterServiceTest {
     public void testProcessMailFromExternalToInternalSuccess() {
         NewMailEvent event = new NewMailEvent(this, "from@exthost", "to@localhost", "subject", "body");
         Mockito.when(orgSettingsService.isDomainLocal("localhost")).thenReturn(true);
-        List<MailboxAlias> mailboxAliasList = new ArrayList<>();
-        mailboxAliasList.add(new MailboxAlias("to@localhost", new Mailbox(), true, null));
+        Set<MailboxAlias> mailboxAliasSet = new HashSet<>();
+        mailboxAliasSet.add(new MailboxAlias("to@localhost", new Mailbox(), true, null));
         AcceptedDomain domain = Mockito.mock(AcceptedDomain.class);
-        Mockito.when(domain.getAliases()).thenReturn(mailboxAliasList);
+        Mockito.when(domain.getAliases()).thenReturn(mailboxAliasSet);
         Mockito.when(orgSettingsService.getDomainByName("localhost")).thenReturn(domain);
         mrs.processMail(event);
         Mockito.verify(mailService).save(ArgumentMatchers.any(Mail.class));
@@ -178,10 +180,10 @@ public class MailRouterServiceTest {
     public void testProcessMailFromExternalToExternalFail() {
         NewMailEvent event = new NewMailEvent(this, "from@exthost", "to@otherexthost", "subject", "body");
         Mockito.when(orgSettingsService.isDomainLocal("localhost")).thenReturn(true);
-        List<MailboxAlias> mailboxAliasList = new ArrayList<>();
-        mailboxAliasList.add(new MailboxAlias("to@localhost", new Mailbox(), true, null));
+        Set<MailboxAlias> mailboxAliasSet = new HashSet<>();
+        mailboxAliasSet.add(new MailboxAlias("to@localhost", new Mailbox(), true, null));
         AcceptedDomain domain = Mockito.mock(AcceptedDomain.class);
-        Mockito.when(domain.getAliases()).thenReturn(mailboxAliasList);
+        Mockito.when(domain.getAliases()).thenReturn(mailboxAliasSet);
         Mockito.when(orgSettingsService.getDomainByName("localhost")).thenReturn(domain);
         mrs.processMail(event);
         Mockito.verify(mailService, Mockito.never()).save(ArgumentMatchers.any());
