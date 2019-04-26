@@ -7,6 +7,7 @@ import com.vladimir.mailserver.dto.MailboxAliasDto;
 import com.vladimir.mailserver.dto.OrgSettingsDto;
 import com.vladimir.mailserver.service.OrgSettingsService;
 import com.vladimir.mailserver.service.UserService;
+import com.vladimir.mailserver.service.ValidatorService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,10 +24,12 @@ import java.util.List;
 public class AdminRestController {
     private OrgSettingsService orgSettingsService;
     private UserService userService;
+    private ValidatorService validatorService;
 
-    public AdminRestController(OrgSettingsService orgSettingsService, UserService userService) {
+    public AdminRestController(OrgSettingsService orgSettingsService, UserService userService, ValidatorService validatorService) {
         this.orgSettingsService = orgSettingsService;
         this.userService = userService;
+        this.validatorService = validatorService;
     }
 
     @GetMapping("/settings")
@@ -36,25 +39,37 @@ public class AdminRestController {
 
     @GetMapping("/org/name/{name}")
     public boolean setOrgName(@PathVariable String name) {
-        orgSettingsService.setName(name);
-        return true;
+        if (validatorService.validateOrgName(name)) {
+            orgSettingsService.setName(name);
+            return true;
+        }
+        return false;
     }
 
     @GetMapping("/domain/new/{name}")
     public boolean addNewDomain(@PathVariable String name) {
-        orgSettingsService.addDomain(name);
-        return true;
+        if (validatorService.validateOrgName(name)) {
+            orgSettingsService.addDomain(name);
+            return true;
+        }
+        return false;
     }
 
     @GetMapping("/domain/del/{id}")
     public boolean deleteDomain(@PathVariable Long id) {
-        return orgSettingsService.deleteDomain(id);
+        if (id != null && id > 0) {
+            return orgSettingsService.deleteDomain(id);
+        }
+        return false;
     }
 
     @GetMapping("/domain/edit/{id}/{name}/{toDefault}")
     public boolean editDomain(@PathVariable Long id, @PathVariable String name, @PathVariable Boolean toDefault) {
-        orgSettingsService.editDomain(id, name, toDefault);
-        return true;
+        if (id != null && id > 0 && toDefault != null && validatorService.validateOrgName(name)) {
+            orgSettingsService.editDomain(id, name, toDefault);
+            return true;
+        }
+        return false;
     }
 
     @GetMapping("/roles")
@@ -76,29 +91,45 @@ public class AdminRestController {
     public boolean editUser(@RequestParam Long id, @RequestParam String name, @RequestParam String surname,
                             @RequestParam UserRoles role, @RequestParam UserStatus status,
                             @RequestParam(required = false) String password) {
-        userService.editUser(id, name, surname, role, status, password);
-        return true;
+        if (id != null && id >0 && role != null && status != null && (password.equals("") &&
+                validatorService.validateUserData(name, surname)) || validatorService.validateUserData(name, surname, password)) {
+            userService.editUser(id, name, surname, role, status, password);
+            return true;
+        }
+        return false;
     }
 
     @GetMapping("/user/aliases/{userId}")
     public List<MailboxAliasDto> getAliases(@PathVariable Long userId) {
-        return userService.getAliases(userId);
+        if (userId != null && userId > 0) {
+            return userService.getAliases(userId);
+        }
+        return null;
     }
 
     @GetMapping("/user/{userId}/alias/add/{value}")
     public boolean addAlias(@PathVariable Long userId, @PathVariable String value) {
-        userService.addAlias(userId, value);
-        return true;
+        if(userId != null && userId > 0 && validatorService.validateAliasValue(value)) {
+            userService.addAlias(userId, value);
+            return true;
+        }
+        return false;
     }
 
     @GetMapping("/user/alias/delete/{id}")
     public boolean deleteAlias(@PathVariable Long id) {
-        return userService.deleteAlias(id);
+        if (id != null && id > 0) {
+            return userService.deleteAlias(id);
+        }
+        return false;
     }
 
     @GetMapping("/alias/edit/{id}/{value}/{doDefault}")
     public boolean editAlias(@PathVariable Long id, @PathVariable String value, @PathVariable Boolean doDefault) {
-        userService.editAlias(id, value, doDefault);
-        return true;
+        if (id != null && id > 0 && doDefault != null && validatorService.validateAliasValue(value)) {
+            userService.editAlias(id, value, doDefault);
+            return true;
+        }
+        return false;
     }
 }

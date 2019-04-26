@@ -4,6 +4,7 @@ import com.vladimir.mailserver.domain.Attachment;
 import com.vladimir.mailserver.domain.MailUser;
 import com.vladimir.mailserver.service.AttachmentService;
 import com.vladimir.mailserver.service.UserService;
+import com.vladimir.mailserver.service.ValidatorService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -27,11 +28,14 @@ public class WebController {
     private AuthenticationManager authenticationManager;
     private UserService userService;
     private AttachmentService attachmentService;
+    private ValidatorService validatorService;
 
-    public WebController(AuthenticationManager authenticationManager, UserService mailUserService, AttachmentService attachmentService) {
+    public WebController(AuthenticationManager authenticationManager, UserService mailUserService,
+                         AttachmentService attachmentService, ValidatorService validatorService) {
         this.authenticationManager = authenticationManager;
         this.userService = mailUserService;
         this.attachmentService = attachmentService;
+        this.validatorService = validatorService;
     }
 
     @GetMapping("/")
@@ -54,34 +58,40 @@ public class WebController {
     @PostMapping("/register")
     public String register(Model model, HttpServletRequest request, @RequestParam String name, @RequestParam String surName,
                            @RequestParam String login, @RequestParam String password1) {
-        MailUser user = userService.find(login);
-        if (user != null) {
-            model.addAttribute("taken", true);
-            model.addAttribute("register", true);
-            model.addAttribute("name", name);
-            model.addAttribute("surName", surName);
-            model.addAttribute("login", login);
-            return "login";
+        if (validatorService.validateUserData(name, surName, login, password1)) {
+            MailUser user = userService.find(login);
+            if (user != null) {
+                model.addAttribute("taken", true);
+                model.addAttribute("register", true);
+                model.addAttribute("name", name);
+                model.addAttribute("surName", surName);
+                model.addAttribute("login", login);
+                return "login";
+            }
+            userService.createUser(name, surName, login, password1);
+            UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(login, password1);
+            token.setDetails(new WebAuthenticationDetails(request));
+            Authentication authentication = authenticationManager.authenticate(token);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            return "redirect:/";
         }
-        userService.createUser(name, surName, login, password1);
-        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(login, password1);
-        token.setDetails(new WebAuthenticationDetails(request));
-        Authentication authentication = authenticationManager.authenticate(token);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        return "redirect:/";
+        return null;
     }
 
     @GetMapping("/attachment/{id}")
     public ResponseEntity<byte[]> getAttachment(@PathVariable Long id) {
-        String login = SecurityContextHolder.getContext().getAuthentication().getName();
-        Attachment attachment = attachmentService.getAttachment(login, id);
-        if (attachment == null) {
-            return new ResponseEntity<>("Resource Not found".getBytes(), HttpStatus.NOT_FOUND);
+        if (id != null && id > 0) {
+            String login = SecurityContextHolder.getContext().getAuthentication().getName();
+            Attachment attachment = attachmentService.getAttachment(login, id);
+            if (attachment == null) {
+                return new ResponseEntity<>("Resource Not found".getBytes(), HttpStatus.NOT_FOUND);
+            }
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.parseMediaType(attachment.getType()));
+            headers.set("Content-disposition", "attachment; filename=" + attachment.getName());
+            headers.set("Content-length", attachment.getSize().toString());
+            return new ResponseEntity<>(attachment.getBody(), headers, HttpStatus.OK);
         }
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.parseMediaType(attachment.getType()));
-        headers.set("Content-disposition", "attachment; filename=" + attachment.getName());
-        headers.set("Content-length", attachment.getSize().toString());
-        return new ResponseEntity<>(attachment.getBody(), headers, HttpStatus.OK);
+        return null;
     }
 }
