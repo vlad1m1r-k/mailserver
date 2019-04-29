@@ -2,6 +2,7 @@ package com.vladimir.mailserver.controller;
 
 import com.vladimir.mailserver.domain.MailType;
 import com.vladimir.mailserver.service.MailService;
+import com.vladimir.mailserver.service.ValidatorService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,6 +29,9 @@ public class MailRestControllerTest {
 
     @MockBean
     private MailService mailService;
+
+    @MockBean
+    private ValidatorService validatorService;
     private Pageable pageable = Pageable.unpaged();
     private List<MultipartFile> attachment = new ArrayList<>();
 
@@ -42,10 +46,20 @@ public class MailRestControllerTest {
 
     @Test
     public void testSendSuccess() {
+        Mockito.when(validatorService.validateEmailAddress(Mockito.anyString())).thenReturn(true);
         mrc.send("sendto", "subject", "body", attachment);
+        Mockito.verify(validatorService).validateEmailAddress(ArgumentMatchers.eq("sendto"));
         Mockito.verify(mailService, Mockito.times(1)).send(ArgumentMatchers.eq("username"),
                 ArgumentMatchers.eq("sendto"), ArgumentMatchers.eq("subject"), ArgumentMatchers.eq("body"),
                 ArgumentMatchers.eq(attachment));
+    }
+
+    @Test
+    public void testSendValidationFail() {
+        Mockito.when(validatorService.validateEmailAddress(Mockito.anyString())).thenReturn(false);
+        mrc.send("sendto", "subject", "body", attachment);
+        Mockito.verify(mailService, Mockito.never()).send(ArgumentMatchers.any(), ArgumentMatchers.any(),
+                ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any());
     }
 
     @Test

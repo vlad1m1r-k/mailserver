@@ -4,6 +4,7 @@ import com.vladimir.mailserver.domain.Attachment;
 import com.vladimir.mailserver.domain.MailUser;
 import com.vladimir.mailserver.service.AttachmentService;
 import com.vladimir.mailserver.service.UserService;
+import com.vladimir.mailserver.service.ValidatorService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,6 +41,9 @@ public class WebControllerTest {
 
     @MockBean
     private AttachmentService attachmentService;
+
+    @MockBean
+    private ValidatorService validatorService;
 
     @Mock
     private Model model;
@@ -102,7 +106,11 @@ public class WebControllerTest {
     public void testRegisterFail() {
         MailUser user = Mockito.mock(MailUser.class);
         Mockito.when(userService.find(Mockito.anyString())).thenReturn(user);
+        Mockito.when(validatorService.validateUserData(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
+                Mockito.anyString())).thenReturn(true);
         String result = wc.register(model, null, "name", "surname", "login", "password");
+        Mockito.verify(validatorService).validateUserData(ArgumentMatchers.eq("name"), ArgumentMatchers.eq("surname"),
+                ArgumentMatchers.eq("login"), ArgumentMatchers.eq("password"));
         Mockito.verify(userService, Mockito.times(1)).find(ArgumentMatchers.eq("login"));
         Mockito.verify(model, Mockito.atLeastOnce()).addAttribute(ArgumentMatchers.eq("taken"), ArgumentMatchers.eq(true));
         Mockito.verify(model, Mockito.atLeastOnce()).addAttribute(ArgumentMatchers.eq("register"), ArgumentMatchers.eq(true));
@@ -115,10 +123,26 @@ public class WebControllerTest {
     }
 
     @Test
+    public void testRegisterValidationFail() {
+        Mockito.when(validatorService.validateUserData(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
+                Mockito.anyString())).thenReturn(false);
+        String result = wc.register(model, null, "name", "surname", "login", "password");
+        Mockito.verify(validatorService).validateUserData(ArgumentMatchers.eq("name"), ArgumentMatchers.eq("surname"),
+                ArgumentMatchers.eq("login"), ArgumentMatchers.eq("password"));
+        Mockito.verify(userService, Mockito.never()).find(ArgumentMatchers.any());
+        Mockito.verify(model, Mockito.never()).addAttribute(ArgumentMatchers.any(), ArgumentMatchers.any());
+        Mockito.verify(userService, Mockito.never()).createUser(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any());
+        Mockito.verify(authenticationManager, Mockito.never()).authenticate(ArgumentMatchers.any());
+        Assert.assertNull(result);
+    }
+
+    @Test
     public void testRegisterSuccess() {
         Mockito.when(userService.find(Mockito.anyString())).thenReturn(null);
+        Mockito.when(validatorService.validateUserData(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
+                Mockito.anyString())).thenReturn(true);
         String result = wc.register(model, Mockito.mock(HttpServletRequest.class), "name", "surname", "login", "password");
-        Mockito.verify(userService, Mockito.times(1)).find(ArgumentMatchers.eq("login"));
+        Mockito.verify(userService).find(ArgumentMatchers.eq("login"));
         Mockito.verify(model, Mockito.never()).addAttribute(ArgumentMatchers.any(), ArgumentMatchers.any());
         Assert.assertEquals("redirect:/", result);
         Mockito.verify(userService, Mockito.atLeastOnce()).createUser(ArgumentMatchers.eq("name"),
@@ -130,7 +154,7 @@ public class WebControllerTest {
     @Test
     public void testGetAttachmentFail() {
         ResponseEntity<byte[]> result = wc.getAttachment(2L);
-        Mockito.verify(attachmentService, Mockito.times(1)).getAttachment(ArgumentMatchers.eq("username"),
+        Mockito.verify(attachmentService).getAttachment(ArgumentMatchers.eq("username"),
                 ArgumentMatchers.eq(2L));
         Assert.assertEquals(new ResponseEntity<>("Resource Not found".getBytes(), HttpStatus.NOT_FOUND), result);
     }

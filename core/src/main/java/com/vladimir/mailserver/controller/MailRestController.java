@@ -3,6 +3,7 @@ package com.vladimir.mailserver.controller;
 import com.vladimir.mailserver.domain.MailType;
 import com.vladimir.mailserver.dto.MailDto;
 import com.vladimir.mailserver.service.MailService;
+import com.vladimir.mailserver.service.ValidatorService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
@@ -22,16 +23,20 @@ import java.util.List;
 @RequestMapping("/mail")
 public class MailRestController {
     private MailService mailService;
+    private ValidatorService validatorService;
 
-    public MailRestController(MailService mailService) {
+    public MailRestController(MailService mailService, ValidatorService validatorService) {
         this.mailService = mailService;
+        this.validatorService = validatorService;
     }
 
     @PostMapping("/send")
     public ResponseEntity send(@RequestParam String to, @RequestParam String subject, @RequestParam String body,
                                @RequestParam List<MultipartFile> files) {
-        String login = SecurityContextHolder.getContext().getAuthentication().getName();
-        mailService.send(login, to.toLowerCase(), subject, body, files);
+        if (validatorService.validateEmailAddress(to)) {
+            String login = SecurityContextHolder.getContext().getAuthentication().getName();
+            mailService.send(login, to.toLowerCase(), subject, body, files);
+        }
         return ResponseEntity.ok().contentType(MediaType.TEXT_PLAIN).build();
     }
 
@@ -55,15 +60,19 @@ public class MailRestController {
 
     @GetMapping("/delete/{id}")
     public ResponseEntity delete(@PathVariable Long id) {
-        String login = SecurityContextHolder.getContext().getAuthentication().getName();
-        mailService.delete(login, id);
+        if (id != null && id > 0) {
+            String login = SecurityContextHolder.getContext().getAuthentication().getName();
+            mailService.delete(login, id);
+        }
         return ResponseEntity.ok().contentType(MediaType.TEXT_PLAIN).build();
     }
 
     @GetMapping("/restore/{id}")
     public ResponseEntity restore(@PathVariable Long id) {
-        String login = SecurityContextHolder.getContext().getAuthentication().getName();
-        mailService.restore(login, id);
+        if (id != null && id > 0) {
+            String login = SecurityContextHolder.getContext().getAuthentication().getName();
+            mailService.restore(login, id);
+        }
         return ResponseEntity.ok().contentType(MediaType.TEXT_PLAIN).build();
     }
 }

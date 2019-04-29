@@ -76,7 +76,7 @@ public class UserServiceImpl implements UserService {
         if (passwordEncoder.matches(password, user.getPassword())) {
             user.setName(name);
             user.setSurname(surName);
-            if (newPassword != null && newPassword.length() > 2) {
+            if (newPassword != null) {
                 user.setPassword(passwordEncoder.encode(newPassword));
             }
             userRepository.save(user);

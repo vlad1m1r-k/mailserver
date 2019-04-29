@@ -1,6 +1,7 @@
 package com.vladimir.mailserver.controller;
 
 import com.vladimir.mailserver.service.AddressService;
+import com.vladimir.mailserver.service.ValidatorService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,6 +25,9 @@ public class AddressRestControllerTest {
     @MockBean
     private AddressService addressService;
 
+    @MockBean
+    private ValidatorService validatorService;
+
     private Pageable pageable = Pageable.unpaged();
 
     @Before
@@ -44,9 +48,21 @@ public class AddressRestControllerTest {
 
     @Test
     public void testAddAddressSuccess() {
+        Mockito.when(validatorService.validateAddressName(Mockito.anyString())).thenReturn(true);
+        Mockito.when(validatorService.validateEmailAddress(Mockito.anyString())).thenReturn(true);
         arc.addAddress("name", "address");
-        Mockito.verify(addressService, Mockito.times(1))
-                .addAddress(ArgumentMatchers.eq("username"), ArgumentMatchers.eq("name"), ArgumentMatchers.eq("address"));
+        Mockito.verify(validatorService).validateAddressName(ArgumentMatchers.eq("name"));
+        Mockito.verify(validatorService).validateEmailAddress(ArgumentMatchers.eq("address"));
+        Mockito.verify(addressService).addAddress(ArgumentMatchers.eq("username"),
+                ArgumentMatchers.eq("name"), ArgumentMatchers.eq("address"));
+    }
+
+    @Test
+    public void testAddAddressValidationFail() {
+        Mockito.when(validatorService.validateAddressName(Mockito.anyString())).thenReturn(false);
+        arc.addAddress("name", "address");
+        Mockito.verify(addressService, Mockito.never()).addAddress(ArgumentMatchers.any(), ArgumentMatchers.any(),
+                ArgumentMatchers.any());
     }
 
     @Test
@@ -58,7 +74,11 @@ public class AddressRestControllerTest {
 
     @Test
     public void testEditContactSuccess() {
+        Mockito.when(validatorService.validateAddressName(Mockito.anyString())).thenReturn(true);
+        Mockito.when(validatorService.validateEmailAddress(Mockito.anyString())).thenReturn(true);
         arc.editContact(2L, "name", "address");
+        Mockito.verify(validatorService).validateAddressName(ArgumentMatchers.eq("name"));
+        Mockito.verify(validatorService).validateEmailAddress(ArgumentMatchers.eq("address"));
         Mockito.verify(addressService, Mockito.times(1)).editAddress(ArgumentMatchers.eq("username"),
                 ArgumentMatchers.eq(2L), ArgumentMatchers.eq("name"), ArgumentMatchers.eq("address"));
     }
