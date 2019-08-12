@@ -1,0 +1,14 @@
+{
+  "name": "frontend.vue",
+  "version": "0.0.1",
+  "description": "Modern Vue frontend",
+  "license": "MIT",
+  "repository": {},
+  "devDependencies": {
+    "webpack": "~4.39.1",
+    "webpack-cli": "~3.3.6",
+    "css-loader": "~3.2.0",
+    "vue-loader": "~15.7.1",
+    "vue-template-compiler": "~2.6.10"
+  }
+}
