@@ -32,7 +32,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/").authenticated()
+                .antMatchers("/").permitAll()
                 .antMatchers("/attachment/*").authenticated()
                 .antMatchers("/mail/**").authenticated()
                 .antMatchers("/user/**").authenticated()
@@ -40,10 +40,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .antMatchers("/static/**", "/favicon.ico").permitAll()
                 .antMatchers("/register").permitAll()
+                .antMatchers("/webjars/**").permitAll()
                 .antMatchers("/**").denyAll()
             .and()
                 .formLogin()
-                .loginPage("/login")
                 .permitAll()
             .and()
                 .logout()

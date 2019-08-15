@@ -2,6 +2,8 @@ package com.vladimir.mailserver.controller;
 
 import com.vladimir.mailserver.domain.Attachment;
 import com.vladimir.mailserver.domain.MailUser;
+import com.vladimir.mailserver.domain.UserRoles;
+import com.vladimir.mailserver.dto.MailUserDto;
 import com.vladimir.mailserver.service.AttachmentService;
 import com.vladimir.mailserver.service.UserService;
 import com.vladimir.mailserver.service.ValidatorService;
@@ -44,15 +46,14 @@ public class WebController {
         MailUser user = userService.find(login);
         if (user == null || !user.isEnabled()) {
             SecurityContextHolder.getContext().getAuthentication().setAuthenticated(false);
+            model.addAttribute("user", MailUserDto.builder()
+                    .login(login)
+                    .role(UserRoles.valueOf(SecurityContextHolder.getContext().getAuthentication().getAuthorities().toArray()[0].toString()))
+                    .build());
             return "index";
         }
         model.addAttribute("user", userService.getUserDto(login));
         return "index";
-    }
-
-    @GetMapping("/login")
-    public String login() {
-        return "login";
     }
 
     @PostMapping("/register")

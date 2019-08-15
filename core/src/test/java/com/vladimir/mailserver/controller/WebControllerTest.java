@@ -97,10 +97,10 @@ public class WebControllerTest {
         Assert.assertEquals("index", result);
     }
 
-    @Test
-    public void testLoginSuccess() {
-        Assert.assertEquals("login", wc.login());
-    }
+//    @Test
+//    public void testLoginSuccess() {
+//        Assert.assertEquals("login", wc.login());
+//    }
 
     @Test
     public void testRegisterFail() {

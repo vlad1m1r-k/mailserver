@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="_csrf_token" th:content="${_csrf.token}">
+    <link rel="stylesheet" href="/webjars/bootstrap/css/bootstrap.min.css">
+    <title>Mail Server Emulation</title>
+</head>
+<body>
+<div id="app">
+    <login-cmp :user-role="user.role"></login-cmp>
+</div>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var user = [[${user}]];
+    /*]]>*/
+</script>
+<script src="/webjars/jquery/jquery.min.js"></script>
+<script src="/webjars/popper.js/umd/popper.min.js"></script>
+<script src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+<script src="/webjars/vue/dist/vue.js"></script>
+<script src="/static/controller.js"></script>
+</body>
+</html>
