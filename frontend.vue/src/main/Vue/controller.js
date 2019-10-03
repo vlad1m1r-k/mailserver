@@ -1,4 +1,5 @@
-import LoginCmp from './components/login.vue';
+import LoginCmp from './components/login/login.vue';
+import MainBlock from './components/mainBlock.vue';
 
 Vue.use({
     install: function (Vue) {
@@ -18,7 +19,8 @@ Vue.use({
 const vm = new Vue({
     el: '#app',
     components: {
-        'login-cmp': LoginCmp
+        'login-cmp': LoginCmp,
+        'main-block': MainBlock
     },
     data: {
         user: user
