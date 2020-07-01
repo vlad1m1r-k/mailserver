@@ -9,7 +9,7 @@
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
     <properties>
-        <mysql.connector.verion>8.0.15</mysql.connector.verion>
+        <mysql.connector.verion>8.0.16</mysql.connector.verion>
         <maven.plugin.verion>2.1.3.RELEASE</maven.plugin.verion>
         <maven.compiler.plugin.version>3.8.0</maven.compiler.plugin.version>
     </properties>
